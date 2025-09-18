@@ -2,36 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # =======================
-# FUNCIONES PRINCIPALES
+# FUNCION PRINCIPAL PRIMERA
 # =======================
 
-def circ_por_tres(p1, p2, p3):
-    (x1, y1), (x2, y2), (x3, y3) = p1, p2, p3
-    A = 2 * (x2 - x1)
-    B = 2 * (y2 - y1)
-    C = x2**2 + y2**2 - x1**2 - y1**2
-    D = 2 * (x3 - x1)
-    E = 2 * (y3 - y1)
-    F = x3**2 + y3**2 - x1**2 - y1**2
-
-    denom = A * E - B * D
-    if abs(denom) < 1e-12:
-        raise ValueError("Los tres puntos son colineales, no definen un círculo.")
-
-    cx = (C * E - B * F) / denom
-    cy = (A * F - C * D) / denom
-    r = np.hypot(x1 - cx, y1 - cy)
-
-    return (float(cx), float(cy)), float(r)
-
-
-def invertir_punto(p):
-    x, y = p
-    den = x**2 + y**2
-    return (x/den, y/den)
-
-
 def mapeo_inverso(tipo, *args):
+    """Calcula el mapeo inverso de un círculo o línea respecto al origen"""
     if tipo == "circulo":
         centro, radio = args
         a, b = centro
@@ -58,6 +33,7 @@ def mapeo_inverso(tipo, *args):
             w = (x/(x**2 + y**2), y/(x**2 + y**2))
             return ("linea", ((0,0), w))
         else:
+            # Las siguientes funciones se deben definir más abajo
             q1 = invertir_punto(p1)
             q2 = invertir_punto(p2)
             q3 = (0,0)
@@ -65,6 +41,33 @@ def mapeo_inverso(tipo, *args):
     else:
         raise ValueError("El tipo debe ser 'circulo' o 'linea'")
 
+# =======================
+# FUNCIONES AUXILIARES
+# =======================
+
+def invertir_punto(p):
+    x, y = p
+    den = x**2 + y**2
+    return (x/den, y/den)
+
+def circ_por_tres(p1, p2, p3):
+    (x1, y1), (x2, y2), (x3, y3) = p1, p2, p3
+    A = 2 * (x2 - x1)
+    B = 2 * (y2 - y1)
+    C = x2**2 + y2**2 - x1**2 - y1**2
+    D = 2 * (x3 - x1)
+    E = 2 * (y3 - y1)
+    F = x3**2 + y3**2 - x1**2 - y1**2
+
+    denom = A * E - B * D
+    if abs(denom) < 1e-12:
+        raise ValueError("Los tres puntos son colineales, no definen un círculo.")
+
+    cx = (C * E - B * F) / denom
+    cy = (A * F - C * D) / denom
+    r = np.hypot(x1 - cx, y1 - cy)
+
+    return (float(cx), float(cy)), float(r)
 
 # =======================
 # GRAFICACIÓN
@@ -96,10 +99,8 @@ def graficar_objeto(tipo, *args, color="b", etiqueta=""):
             ys = m*xs + b
             plt.plot(xs, ys, color=color, label=etiqueta)
 
-
 def mostrar_grafico_comparativo(entrada, salida):
-    """Muestra entrada y salida en dos subplots de la misma ventana."""
-    fig, axs = plt.subplots(1, 2, figsize=(6,4)) #tamaño de la ventana
+    fig, axs = plt.subplots(1, 2, figsize=(6,4))
 
     # Entrada
     axs[0].axhline(0, color="gray", lw=0.5)
@@ -121,16 +122,16 @@ def mostrar_grafico_comparativo(entrada, salida):
 
     plt.show()
 
-
 # =======================
 # EJEMPLOS
 # =======================
 
 ejemplos = [
-    #("circulo", (1,0), 1),
+    ("circulo", (1,0), 1), 
     #("circulo", (0,10), 2),
-    ("linea", (0.5,0), (0.5,0.5)),
+    #("linea", (0.5,0), (0.5,0.5)),
     #("linea", (0,0), (2,3))
+
 ]
 
 for entrada in ejemplos:
