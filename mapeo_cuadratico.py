@@ -1,45 +1,57 @@
 import math
+import matplotlib.pyplot as plt
 
 def mapeo_cuadratico(z, modo='cartesiano'):
-    """
-    Mapeo cuadrático w = z^2.
-    
-    Argumentos:
-    - z: tupla de coordenadas
-        - modo='cartesiano': z = (x, y)
-        - modo='polar': z = (r, theta)
-    
-    Retorna:
-    - w: tupla de coordenadas en el mismo modo
-        - cartesiano: (u, v)
-        - polar: (rho, phi)
-    """
+    """Realiza el mapeo cuadrático: z -> z^2"""
     if modo == 'cartesiano':
         x, y = z
         u = x**2 - y**2
         v = 2 * x * y
         return (u, v)
-    
     elif modo == 'polar':
         r, theta = z
         rho = r**2
         phi = 2 * theta
-        return (rho, phi)
-    
+        # Convertimos a cartesianas para graficar
+        u = rho * math.cos(phi)
+        v = rho * math.sin(phi)
+        return (u, v)
     else:
         raise ValueError("El modo debe ser 'cartesiano' o 'polar'")
 
-# --- Ejemplos de uso ---
+def graficar_punto(ax, punto, color="b", etiqueta="", lim=5):
+    """Grafica un solo punto con ejes centrados y límites fijos"""
+    x, y = punto
+    ax.plot(x, y, 'o', color=color, label=etiqueta)
+    ax.axhline(0, color='gray', lw=0.5)
+    ax.axvline(0, color='gray', lw=0.5)
+    ax.set_aspect('equal', adjustable='box')
+    ax.set_xlim(-lim, lim)
+    ax.set_ylim(-lim, lim)
+    ax.legend()
 
+def mostrar_grafico_comparativo(z, w, titulo_izq="Original", titulo_der="Mapeo cuadrático"):
+    """Muestra la entrada y salida en consola y en gráficos"""
+    print(f"{titulo_izq}: {z}")
+    print(f"{titulo_der}: {w}\n")
+    
+    fig, axs = plt.subplots(1, 2, figsize=(8,4))
+    graficar_punto(axs[0], z, color='blue', etiqueta=titulo_izq)
+    axs[0].set_title(titulo_izq)
+    
+    graficar_punto(axs[1], w, color='red', etiqueta=titulo_der)
+    axs[1].set_title(titulo_der)
+    
+    plt.tight_layout()
+    plt.show()
 
-# Coordenadas cartesianas
-#z en coordenadas cartesianas es: z = x + iy
-z_cart = (2, 1)
-w_cart = mapeo_cuadratico((2, 1), modo='cartesiano')
-print(f"Entrada cartesiana {z_cart} -> Salida {w_cart}")
+# --- Lista de ejemplos ---
+ejemplos = [
+    ("cartesiano", (2, 1)),
+    ("polar", (2, math.pi/4))
+]
 
-# Coordenadas polares
-# z en coordenadas polares es: z = re^(iθ)
-z_polar = (2, math.pi/4)
-w_polar = mapeo_cuadratico(z_polar, modo='polar')
-print(f"Entrada polar {z_polar} -> Salida {w_polar}")
+# --- Procesar todos los ejemplos ---
+for modo, z in ejemplos:
+    w = mapeo_cuadratico(z, modo=modo)
+    mostrar_grafico_comparativo(z, w, f"Original ({modo})", "Mapeo cuadrático")

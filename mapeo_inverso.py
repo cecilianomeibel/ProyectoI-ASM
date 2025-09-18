@@ -1,97 +1,140 @@
-import cmath
+import numpy as np
+import matplotlib.pyplot as plt
+
+# =======================
+# FUNCIONES PRINCIPALES
+# =======================
 
 def circ_por_tres(p1, p2, p3):
-    """ Devuelve centro y radio del círculo que pasa por tres puntos """
-    (x1,y1),(x2,y2),(x3,y3) = (p1.real,p1.imag),(p2.real,p2.imag),(p3.real,p3.imag)
-    A = 2*(x2-x1)
-    B = 2*(y2-y1)
+    (x1, y1), (x2, y2), (x3, y3) = p1, p2, p3
+    A = 2 * (x2 - x1)
+    B = 2 * (y2 - y1)
     C = x2**2 + y2**2 - x1**2 - y1**2
-    D = 2*(x3-x1)
-    E = 2*(y3-y1)
+    D = 2 * (x3 - x1)
+    E = 2 * (y3 - y1)
     F = x3**2 + y3**2 - x1**2 - y1**2
-    denom = A*E - B*D
-    if denom == 0:
-        return None
-    cx = (C*E - B*F)/denom
-    cy = (A*F - C*D)/denom
-    r = ((x1-cx)**2 + (y1-cy)**2)**0.5
-    return (cx, cy), r
+
+    denom = A * E - B * D
+    if abs(denom) < 1e-12:
+        raise ValueError("Los tres puntos son colineales, no definen un círculo.")
+
+    cx = (C * E - B * F) / denom
+    cy = (A * F - C * D) / denom
+    r = np.hypot(x1 - cx, y1 - cy)
+
+    return (float(cx), float(cy)), float(r)
+
 
 def invertir_punto(p):
-    """Inversión respecto al círculo unidad"""
     x, y = p
-    r2 = x*x + y*y
-    return (x/r2, y/r2)
+    den = x**2 + y**2
+    return (x/den, y/den)
+
 
 def mapeo_inverso(tipo, *args):
-    """
-    Aplica la inversión w = 1/z a un círculo o recta.
-    
-    Argumentos:
-    - ("circulo", centro, radio)   con centro = (x,y)
-    - ("linea", p1, p2)            con dos puntos de la recta
-    
-    Retorna:
-    - ("circulo", (cx,cy), r)
-    - ("linea", ((x1,y1),(x2,y2)))
-    """
     if tipo == "circulo":
         centro, radio = args
         a, b = centro
         r = radio
-        d2 = a*a + b*b  # distancia al origen al cuadrado
+        d2 = a*a + b*b
 
-        # Círculo que pasa por el origen → línea
-        if abs(d2 - r*r) < 1e-12:  
+        if abs(d2 - r*r) < 1e-12:
             x_line = a / 2
-            return ("linea", ((x_line, 0), (x_line, 1)))  # punto cualquiera
+            return ("linea", ((x_line, 0), (x_line, 1)))
         else:
-            # Círculo que no pasa por el origen → inversión directa
             cx = -a / (d2 - r*r)
             cy = -b / (d2 - r*r)
             r_new = r / abs(d2 - r*r)
-            return ("circulo", (cx, cy), r_new)
+            return ("circulo", (float(cx), float(cy)), float(r_new))
 
     elif tipo == "linea":
         p1, p2 = args
         x1, y1 = p1
         x2, y2 = p2
 
-        # Línea que pasa por el origen → sigue siendo línea
-        if (x1==0 and y1==0) or (x2==0 and y2==0):
-            p_no_origen = (x2, y2) if (x1==0 and y1==0) else (x1, y1)
+        if (x1 == 0 and y1 == 0) or (x2 == 0 and y2 == 0):
+            p_no_origen = (x2, y2) if (x1 == 0 and y1 == 0) else (x1, y1)
             x, y = p_no_origen
             w = (x/(x**2 + y**2), y/(x**2 + y**2))
             return ("linea", ((0,0), w))
         else:
-            # Línea que no pasa por el origen → círculo que pasa por el origen
             q1 = invertir_punto(p1)
             q2 = invertir_punto(p2)
-            q3 = (0,0)  # el círculo debe pasar por el origen
-            return ("circulo", *circ_por_tres(complex(*q1), complex(*q2), complex(*q3)))
+            q3 = (0,0)
+            return ("circulo", *circ_por_tres((0,0), q1, q2))
     else:
         raise ValueError("El tipo debe ser 'circulo' o 'linea'")
 
 
-def info_recta_puntos(p1, p2):
-    """ Devuelve info legible de la recta a partir de dos puntos """
-    x1, y1 = p1
-    x2, y2 = p2
-    if x1 == x2:
-        return f"x = {x1}"
-    elif y1 == y2:
-        return f"y = {y1}"
-    else:
-        m = (y2 - y1) / (x2 - x1)
-        b = y1 - m*x1
-        return f"y = {m}x + {b}"
+# =======================
+# GRAFICACIÓN
+# =======================
+
+def graficar_objeto(tipo, *args, color="b", etiqueta=""):
+    if tipo == "circulo":
+        if len(args) == 1 and isinstance(args[0], tuple) and len(args[0]) == 2 and isinstance(args[0][1], (float, np.floating)):
+            centro, radio = args[0]
+        else:
+            centro, radio = args
+        cx, cy = centro
+        circ = plt.Circle((cx, cy), radio, color=color, fill=False, label=etiqueta)
+        plt.gca().add_patch(circ)
+        plt.plot(cx, cy, "o", color=color)
+
+    elif tipo == "linea":
+        if len(args) == 1:
+            (x1, y1), (x2, y2) = args[0]
+        else:
+            (x1, y1), (x2, y2) = args
+
+        if x1 == x2:
+            plt.axvline(x1, color=color, label=etiqueta)
+        else:
+            m = (y2 - y1) / (x2 - x1)
+            b = y1 - m*x1
+            xs = np.linspace(-5,5,400)
+            ys = m*xs + b
+            plt.plot(xs, ys, color=color, label=etiqueta)
 
 
-# Ejemplos
-print(mapeo_inverso("circulo", (1,0),1)) # Círculo que pasa por el origen → Línea que no pasa por el origen
+def mostrar_grafico_comparativo(entrada, salida):
+    """Muestra entrada y salida en dos subplots de la misma ventana."""
+    fig, axs = plt.subplots(1, 2, figsize=(6,4)) #tamaño de la ventana
 
-print(mapeo_inverso("circulo", (0,10), 2)) # Círculo que no pasa por el origen → Círculo que no pasa por el origen
+    # Entrada
+    axs[0].axhline(0, color="gray", lw=0.5)
+    axs[0].axvline(0, color="gray", lw=0.5)
+    plt.sca(axs[0])
+    graficar_objeto(*entrada, color="blue")
+    axs[0].set_aspect('equal', adjustable='box')
+    axs[0].set_title("Original")
+    axs[0].legend()
 
-print(mapeo_inverso("linea", (0.5,0), (0.5,0.5))) # Línea que no pasa por el origen → Círculo que pasa por el origen
+    # Salida
+    axs[1].axhline(0, color="gray", lw=0.5)
+    axs[1].axvline(0, color="gray", lw=0.5)
+    plt.sca(axs[1])
+    graficar_objeto(*salida, color="red")
+    axs[1].set_aspect('equal', adjustable='box')
+    axs[1].set_title("Mapeo inverso")
+    axs[1].legend()
 
-print(mapeo_inverso("linea", (0,0),(2,3))) # Línea que pasa por el origen → Línea que pasa por el origen
+    plt.show()
+
+
+# =======================
+# EJEMPLOS
+# =======================
+
+ejemplos = [
+    #("circulo", (1,0), 1),
+    #("circulo", (0,10), 2),
+    ("linea", (0.5,0), (0.5,0.5)),
+    #("linea", (0,0), (2,3))
+]
+
+for entrada in ejemplos:
+    salida = mapeo_inverso(*entrada)
+    print("Entrada:", entrada)
+    print("Salida:", salida)
+    mostrar_grafico_comparativo(entrada, salida)
