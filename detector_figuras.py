@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import easyocr
 import re
-
+# Ruta de la imagen a procesar
 IMG_PATH = 'textoCirculo6.jpeg'
 
 # Cargar imagen
