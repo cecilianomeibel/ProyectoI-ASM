@@ -1,5 +1,6 @@
 
 # Importar funciones de los módulos
+import detector_figuras
 from mapeo_lineal import mapeo_lineal
 from mapeo_bilineal import mapeo_bilineal, valida_imagen
 from mapeo_cuadratico import mapeo_cuadratico, mostrar_grafico_comparativo as mostrar_grafico_cuadratico
@@ -7,6 +8,12 @@ from mapeo_exponencial import mapeo_exponencial, visualizar_mapeo
 from mapeo_inverso import mapeo_inverso, mostrar_grafico_comparativo as mostrar_grafico_inverso
 
 def main():
+
+    punto1, punto2, figura, radio, centro = detector_figuras.detectar_figura_y_texto('ImgPruebas/textoCirculo9.jpeg')
+
+    print(f'Datos extraídos: punto1={punto1}, punto2={punto2}, figura={figura}, radio={radio}, centro={centro}')
+
+    '''
     print("\n=== Ejemplo 1: Mapeo Lineal de un círculo ===")
     mapeo_lineal(A=2+0j, B=1+1j, tipo_figura='circulo', centro=0, radio=2)
 
@@ -29,6 +36,6 @@ def main():
     print("\n=== Ejemplo 5: Mapeo Exponencial de una recta horizontal (x=1) ===")
     z2, w2 = mapeo_exponencial(x=1, y=None)
     visualizar_mapeo(z2, w2, "Recta horizontal (x=1) -> Círculo de radio e^1")
-
+    '''
 if __name__ == "__main__":
     main()

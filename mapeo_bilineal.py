@@ -90,8 +90,17 @@ def valida_imagen(W, tipo_resultado, verbose=True):
             print(f"  Ajuste de círculo: centro=({a_c:.4f}, {b_c:.4f}), radio={r_c:.4f}")
         return ("círculo", a_c, b_c, r_c)
 
+# Arreglar esto
+def mapeo_bilineal():
+    """
+    Función de ejemplo que aplica un mapeo bilineal a un círculo y muestra el resultado.
+    """
+    print("Ejemplo de mapeo bilineal: w = (2z + 1) / (z + 1), círculo de centro (1,0) y radio 1.")
+    Z, W, zs, pasa, tipo_resultado = mapeo_bilineal_aux(2, 1, 1, 1, 'circulo', centro=1+0j, radio=1.0)
+    print("Resultado obtenido:")
+    valida_imagen(W, tipo_resultado)
     
-def mapeo_bilineal(a, b, c, d, tipo, *, centro=None, radio=None, n=600, mostrar=True, mostrar_referencia=True, ref_factor=3.0, guardar_fig=False, ruta_fig=None, cerrar_fig=True, m=None, b_linea=None, L_plot=10.0, verificar=False):
+def mapeo_bilineal_aux(a, b, c, d, tipo, *, centro=None, radio=None, n=600, mostrar=True, mostrar_referencia=True, ref_factor=3.0, guardar_fig=False, ruta_fig=None, cerrar_fig=True, m=None, b_linea=None, L_plot=10.0, verificar=False):
     """
     Aplica un mapeo de Möbius a un círculo o recta.
     - a, b, c, d: coeficientes del mapeo Möbius (ad-bc != 0)
