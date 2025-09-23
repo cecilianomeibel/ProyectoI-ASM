@@ -74,15 +74,4 @@ def mostrar_grafico_comparativo(z, w, titulo_izq="Original", titulo_der="Mapeo c
     plt.tight_layout()
     plt.show()
 
-# ---------
-# EJEMPLOS
-# ---------
-ejemplos = [
-    ("cartesiano", (2, 1)),       # Punto en coordenadas cartesianas
-    ("polar", (2, math.pi/4))     # Punto en coordenadas polares
-]
 
-# Procesar todos los ejemplos
-for modo, z in ejemplos:
-    w = mapeo_cuadratico(z, modo=modo)
-    mostrar_grafico_comparativo(z, w, f"Original ({modo})", "Mapeo cuadrático")

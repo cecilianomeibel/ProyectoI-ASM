@@ -78,19 +78,16 @@ def visualizar_mapeo(z_original, w_mapeado, titulo="Mapeo Exponencial"):
 def main():
     print("=== MAPEO EXPONENCIAL DE NUMEROS COMPLEJOS ===\n")
     
-    """
     # Ejemplo 1: Recta infinita con ángulo pi/4
     print("1. Recta infinita con angulo pi/4:")
     z1, w1 = mapeo_exponencial(x=None, y=np.pi)
     visualizar_mapeo(z1, w1, "Recta infinita -> Recta desde origen")
-    """
     
     # Ejemplo 2: Círculo de radio e^1
     print("\n2. Circulo de radio e^1:")
     z2, w2 = mapeo_exponencial(x=1, y=None)
     visualizar_mapeo(z2, w2, "Recta horizontal -> Circulo")
-
-    """
+    
     # Ejemplo 3: Círculo de radio e^0 = 1
     print("\n3. Circulo de radio e^0 = 1:")
     z3, w3 = mapeo_exponencial(x=0, y=None)
@@ -100,7 +97,6 @@ def main():
     print("\n4. Recta infinita con angulo pi/2:")
     z4, w4 = mapeo_exponencial(x=None, y=np.pi/2)
     visualizar_mapeo(z4, w4, "Recta infinita (theta=pi/2) -> Recta vertical")
-    """
 
 if __name__ == "__main__":
     main()

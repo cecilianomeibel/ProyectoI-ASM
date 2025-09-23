@@ -138,7 +138,6 @@ def mostrar_grafico_comparativo(entrada, salida):
     graficar_objeto(*entrada, color="blue")
     axs[0].set_aspect('equal', adjustable='box')
     axs[0].set_title("Original")
-    axs[0].legend()
 
     # Salida
     axs[1].axhline(0, color="gray", lw=0.5)
@@ -147,23 +146,5 @@ def mostrar_grafico_comparativo(entrada, salida):
     graficar_objeto(*salida, color="red")
     axs[1].set_aspect('equal', adjustable='box')
     axs[1].set_title("Mapeo inverso")
-    axs[1].legend()
 
     plt.show()
-
-# ----------
-# EJEMPLOS
-# ----------
-
-ejemplos = [
-    ("circulo", (1,0), 1), 
-    #("circulo", (0,10), 2),
-    #("linea", (0.5,0), (0.5,0.5)),
-    #("linea", (0,0), (2,3))
-]
-
-for entrada in ejemplos:
-    salida = mapeo_inverso(*entrada)
-    print("Entrada:", entrada)
-    print("Salida:", salida)
-    mostrar_grafico_comparativo(entrada, salida)

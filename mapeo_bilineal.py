@@ -298,40 +298,7 @@ def mapeo_bilineal(a, b, c, d, tipo, *, centro=None, radio=None, n=600, mostrar=
 
     return Z, W, zs, pasa, tipo_resultado
 
-if __name__ == "__main__":
-        print("""
-    Ejemplo 1: Círculo bajo identidad (sin singularidad)
-    ---------------------------------------------------
-    Transformación: w = z
-    Círculo de centro (1,1) y radio 1.
-    - La imagen debe ser exactamente el mismo círculo.
-    - Validación matemática: el ajuste debe dar centro y radio iguales al original.
-    """)
-        Z, W, zs, pasa, tipo_resultado = mapeo_bilineal(1, 0, 0, 1, 'circulo', centro=1+1j, radio=1.0)
-        print("  Resultado obtenido:")
-        valida_imagen(W, tipo_resultado)
 
-        print("""
-    Ejemplo 2: Círculo bajo mapeo bilineal general
-    ----------------------------------------------
-    Transformación: w = (2z+1)/(z+1)
-    Círculo de centro (1,0) y radio 1.
-    - La imagen es otro círculo, distinto al original.
-    - La singularidad (z = -1) está fuera del círculo.
-    - Validación matemática: el ajuste debe dar centro y radio distintos, pero la imagen sigue siendo un círculo.
-    """)
-        Z, W, zs, pasa, tipo_resultado = mapeo_bilineal(2, 1, 1, 1, 'circulo', centro=1+0j, radio=1.0)
-        print("  Resultado obtenido:")
-        valida_imagen(W, tipo_resultado)
 
-        print("""
-    Ejemplo 3: Recta diagonal y = x + 1 bajo inversión
-    --------------------------------------------------
-    Transformación: w = 1/z
-    Recta y = x + 1 (no pasa por el origen).
-    - La imagen es un círculo, porque la recta no pasa por la singularidad (z=0).
-    - Validación matemática: el ajuste debe dar un círculo.
-    """)
-        Z, W, zs, pasa, tipo_resultado = mapeo_bilineal(0, 1, 1, 0, 'recta', m=1.0, b_linea=1.0, n=1000, L_plot=8.0)
-        print("  Resultado obtenido:")
-        valida_imagen(W, tipo_resultado)
+
+
