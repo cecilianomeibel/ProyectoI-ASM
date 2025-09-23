@@ -3,7 +3,7 @@ import numpy as np
 import easyocr
 import re
 
-IMG_PATH = 'textoCirculo1.jpeg'
+IMG_PATH = 'textoCirculo6.jpeg'
 
 # Cargar imagen
 img = cv2.imread(IMG_PATH)
@@ -57,8 +57,8 @@ elif figura == 'circulo':
     texto_norm = texto_norm.replace('O', '0').replace('o', '0')
     texto_norm = texto_norm.replace('|', '1')
     texto_norm = texto_norm.replace('.', ',').replace(';', ',').replace(':', ',').replace('=', ':')
-    # Corregir errores de OCR: 'K' o 'k' por 'r', y 'z' por '=' o ':'
-    texto_norm = re.sub(r'([Kk])', 'r', texto_norm)
+    # Corregir errores de OCR: 'K', 'k', 'Y', 'y' por 'r', y 'z' por '=' o ':'
+    texto_norm = re.sub(r'([KkYy])', 'r', texto_norm)
     texto_norm = texto_norm.replace('z', ':')
     # Buscar todos los radios y centros posibles
     radios = re.findall(r'r\s*[:=,\s]+\s*(\d+)', texto_norm, re.IGNORECASE)
