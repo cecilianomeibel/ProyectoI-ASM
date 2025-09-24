@@ -1,20 +1,46 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# --------------------------
-# FUNCION PRINCIPAL PRIMERA
-# --------------------------
+# -------------------
+# FUNCION PRINCIPAL 
+# -------------------
 
-def mapeo_inverso(tipo, *args):
+def mapeo_inverso(punto1, punto2, figura, radio, centro):
     """
-    Calcula el mapeo inverso de un círculo o línea respecto al origen.
-    Parámetros:
-        tipo: "circulo" o "linea"
-        args: datos del objeto (centro y radio para círculos, puntos para líneas)
-    Retorna:
-        Una tupla con el tipo de objeto resultante y sus parámetros.
+    Calcula el mapeo inverso de un círculo o línea respecto al origen
+    y muestra automáticamente el gráfico comparativo.
     """
-    if tipo == "circulo":
+
+    # Preparar datos de entrada
+    if figura == "circulo":
+        entrada = (figura, centro, radio)
+        args = (centro, radio)
+    elif figura == "recta":
+        entrada = (figura, punto1, punto2)
+        args = (punto1, punto2)
+    else:
+        raise ValueError("figura debe ser 'circulo' o 'recta'")
+
+    # Calcular mapeo inverso
+    salida = mapeo_inverso_aux(figura, args)
+
+    # Graficar automáticamente
+    mostrar_grafico_comparativo(entrada, salida)
+
+    # Retornar solo la salida por si se quiere usar
+    return salida
+
+
+# =======================
+# FUNCIONES AUXILIARES
+# =======================
+
+def mapeo_inverso_aux(figura, args):
+    """
+    Función auxiliar para mapeo inverso.
+    """
+
+    if figura == "circulo":
         # Desempaquetar centro y radio
         centro, radio = args
         a, b = centro
@@ -24,7 +50,7 @@ def mapeo_inverso(tipo, *args):
         # Caso especial: el círculo pasa por el origen → se mapea a línea
         if abs(d2 - r*r) < 1e-12:
             x_line = a / 2
-            return ("linea", ((x_line, 0), (x_line, 1)))
+            return ("recta", ((x_line, 0), (x_line, 1)))
         else:
             # Cálculo general para círculo que no pasa por el origen
             cx = -a / (d2 - r*r)
@@ -32,7 +58,7 @@ def mapeo_inverso(tipo, *args):
             r_new = r / abs(d2 - r*r)
             return ("circulo", (float(cx), float(cy)), float(r_new))
 
-    elif tipo == "linea":
+    elif figura == "recta":
         # Desempaquetar los dos puntos de la línea
         p1, p2 = args
         x1, y1 = p1
@@ -44,7 +70,7 @@ def mapeo_inverso(tipo, *args):
             x, y = p_no_origen
             # Aplicar inversión respecto al origen
             w = (x/(x**2 + y**2), y/(x**2 + y**2))
-            return ("linea", ((0,0), w))
+            return ("recta", ((0,0), w))
         else:
             # Caso general: la línea no pasa por el origen → se mapea a círculo que pasa por el origen
             q1 = invertir_punto(p1)
@@ -52,11 +78,8 @@ def mapeo_inverso(tipo, *args):
             q3 = (0,0)
             return ("circulo", *circ_por_tres((0,0), q1, q2))
     else:
-        raise ValueError("El tipo debe ser 'circulo' o 'linea'")
-
-# =======================
-# FUNCIONES AUXILIARES
-# =======================
+        raise ValueError("El figura debe ser 'circulo' o 'recta'")
+    
 
 def invertir_punto(p):
     """
@@ -82,7 +105,7 @@ def circ_por_tres(p1, p2, p3):
 
     denom = A * E - B * D
     if abs(denom) < 1e-12:
-        raise ValueError("Los tres puntos son colineales, no definen un círculo.")
+        raise ValueError("Los tres puntos son corectales, no definen un círculo.")
 
     cx = (C * E - B * F) / denom
     cy = (A * F - C * D) / denom
@@ -94,11 +117,11 @@ def circ_por_tres(p1, p2, p3):
 # GRAFICACIÓN
 # ------------
 
-def graficar_objeto(tipo, *args, color="b", etiqueta=""):
+def graficar_objeto(figura, *args, color="b", etiqueta=""):
     """
     Dibuja un círculo o línea en la gráfica usando matplotlib.
     """
-    if tipo == "circulo":
+    if figura == "circulo":
         # Ajuste para argumentos
         if len(args) == 1 and isinstance(args[0], tuple) and len(args[0]) == 2 and isinstance(args[0][1], (float, np.floating)):
             centro, radio = args[0]
@@ -110,7 +133,7 @@ def graficar_objeto(tipo, *args, color="b", etiqueta=""):
         plt.gca().add_patch(circ)
         plt.plot(cx, cy, "o", color=color)
 
-    elif tipo == "linea":
+    elif figura == "recta":
         if len(args) == 1:
             (x1, y1), (x2, y2) = args[0]
         else:
@@ -148,3 +171,8 @@ def mostrar_grafico_comparativo(entrada, salida):
     axs[1].set_title("Mapeo inverso")
 
     plt.show()
+
+
+# Pruebas 
+#mapeo_inverso(None, None, "circulo", 1, (1,0))
+#mapeo_inverso((0.5,0), (0.5,0.5), "recta", None, None)
