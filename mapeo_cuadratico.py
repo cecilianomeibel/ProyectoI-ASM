@@ -1,77 +1,90 @@
 import math
+import numpy as np
 import matplotlib.pyplot as plt
 
 # ------------------
-# MAPEO CUADRÁTICO
+# FUNCION PRINCIPAL
 # ------------------
-def mapeo_cuadratico(z, modo='cartesiano'):
+def mapeo_cuadratico(punto1=None, punto2=None, figura=None, radio=None, centro=None):
     """
-    Realiza el mapeo cuadrático: z -> z^2
+    Función que detecta el tipo de figura según los parámetros y:
+    - Aplica el mapeo cuadrático
+    - Grafico comparativo de la versión original y mapeada
+
     Parámetros:
-        z: punto en coordenadas cartesianas (x, y) o polares (r, theta)
-        modo: 'cartesiano' o 'polar'
-    Retorna:
-        Tupla (u, v) del punto transformado
+    - punto1, punto2: argumentos para una recta
+    - figura:  "recta" o "circulo"
+    - radio, centro: argumentos para un círculo
     """
-    if modo == 'cartesiano':
+
+    # Función interna para el mapeo cuadrático
+    def mapeo_cuadratico_aux(z):
         x, y = z
-        # Fórmulas del mapeo cuadrático en cartesianas: (x + iy)^2 = u + iv
         u = x**2 - y**2
-        v = 2 * x * y
+        v = 2*x*y
         return (u, v)
-    elif modo == 'polar':
-        r, theta = z
-        # Fórmulas en coordenadas polares: r^2 e^(i 2θ)
-        rho = r**2
-        phi = 2 * theta
-        # Convertir de polar a cartesianas para graficar
-        u = rho * math.cos(phi)
-        v = rho * math.sin(phi)
-        return (u, v)
+
+    # Función interna para graficar
+    def graficar_figura(ax, fig, color="b", etiqueta="", lim=5):
+        x, y = zip(*fig)
+        ax.plot(x, y, color=color, label=etiqueta)
+        ax.axhline(0, color='gray', lw=0.5)
+        ax.axvline(0, color='gray', lw=0.5)
+        ax.set_aspect('equal', adjustable='box')
+        ax.set_xlim(-lim, lim)
+        ax.set_ylim(-lim, lim)
+        ax.legend()
+
+    # ------------------
+    # CREACION DE LA FIGURA ORIGINAL
+    # ------------------
+    if figura is None:
+        raise ValueError("Debe indicar el tipo de figura")
+
+    # Recta (dos puntos)
+    if figura == "recta":
+        if punto1 is None or punto2 is None:
+            raise ValueError("Debe proporcionar dos puntos para la recta")
+        x1, y1 = punto1
+        x2, y2 = punto2
+        x = np.linspace(x1, x2, 200)
+        y = np.linspace(y1, y2, 200)
+        figura_original = list(zip(x, y))
+
+    # Círculo
+    elif figura == "circulo":
+        if radio is None or centro is None:
+            raise ValueError("Debe proporcionar radio y centro para el círculo")
+        xc, yc = centro
+        theta = np.linspace(0, 2*np.pi, 200)
+        figura_original = [(radio*math.cos(t)+xc, radio*math.sin(t)+yc) for t in theta]
+
     else:
-        raise ValueError("El modo debe ser 'cartesiano' o 'polar'")
+        raise ValueError("Tipo de figura no reconocida, debe ser 'recta' o 'circulo'")
 
-# =======================
-# FUNCIONES DE GRAFICACIÓN
-# =======================
-def graficar_punto(ax, punto, color="b", etiqueta="", lim=5):
-    """
-    Grafica un solo punto en un eje dado.
-    Parámetros:
-        ax: objeto matplotlib Axes
-        punto: tupla (x, y)
-        color: color del punto
-        etiqueta: leyenda del punto
-        lim: límite de los ejes
-    """
-    x, y = punto
-    ax.plot(x, y, 'o', color=color, label=etiqueta)
-    ax.axhline(0, color='gray', lw=0.5)  # eje horizontal
-    ax.axvline(0, color='gray', lw=0.5)  # eje vertical
-    ax.set_aspect('equal', adjustable='box')  # ejes con la misma escala
-    ax.set_xlim(-lim, lim)
-    ax.set_ylim(-lim, lim)
-    ax.legend()
+    # ------------------
+    # MAPEADO CUADRATICO
+    # ------------------
+    figura_mapeada = [mapeo_cuadratico_aux(p) for p in figura_original]
 
-def mostrar_grafico_comparativo(z, w, titulo_izq="Original", titulo_der="Mapeo cuadrático"):
-    """
-    Muestra un gráfico comparativo entre el punto original  y el resultado del 
-    mapeo cuadrático. También imprime los valores en consola.
-    """
-    print(f"{titulo_izq}: {z}")
-    print(f"{titulo_der}: {w}\n")
-    
-    fig, axs = plt.subplots(1, 2, figsize=(8,4))
-    
-    # Gráfico del punto original
-    graficar_punto(axs[0], z, color='blue', etiqueta=titulo_izq)
-    axs[0].set_title(titulo_izq)
-    
-    # Gráfico del punto transformado
-    graficar_punto(axs[1], w, color='red', etiqueta=titulo_der)
-    axs[1].set_title(titulo_der)
-    
+    # ------------------
+    # GRAFICO COMPARATIVO
+    # ------------------
+    fig, axs = plt.subplots(1, 2, figsize=(10,5))
+    graficar_figura(axs[0], figura_original, color='blue', etiqueta="Original")
+    axs[0].set_title("Original")
+
+    graficar_figura(axs[1], figura_mapeada, color='red', etiqueta="Mapeo cuadrático")
+    axs[1].set_title("Mapeo cuadrático")
+
     plt.tight_layout()
     plt.show()
 
+    # No devuelve nada, solo grafica
+    return
 
+# ------------------
+# EJEMPLOS DE USO
+# ------------------
+mapeo_cuadratico((-1,0), (1,7.5), "recta", None, None)
+mapeo_cuadratico(None, None, "circulo", 1, (1,0))
