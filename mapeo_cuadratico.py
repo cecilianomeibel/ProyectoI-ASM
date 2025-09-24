@@ -84,7 +84,7 @@ def mapeo_cuadratico(punto1=None, punto2=None, figura=None, radio=None, centro=N
     return
 
 # ------------------
-# EJEMPLOS DE USO
+# EJEMPLOS
 # ------------------
-mapeo_cuadratico((-1,0), (1,7.5), "recta", None, None)
-mapeo_cuadratico(None, None, "circulo", 1, (1,0))
+#mapeo_cuadratico((-1,0), (1,7.5), "recta", None, None)
+#mapeo_cuadratico(None, None, "circulo", 1, (1,0))
