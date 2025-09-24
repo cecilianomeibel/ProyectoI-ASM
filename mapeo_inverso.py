@@ -15,11 +15,11 @@ def mapeo_inverso(punto1, punto2, figura, radio, centro):
     if figura == "circulo":
         entrada = (figura, centro, radio)
         args = (centro, radio)
-    elif figura == "linea":
+    elif figura == "recta":
         entrada = (figura, punto1, punto2)
         args = (punto1, punto2)
     else:
-        raise ValueError("figura debe ser 'circulo' o 'linea'")
+        raise ValueError("figura debe ser 'circulo' o 'recta'")
 
     # Calcular mapeo inverso
     salida = mapeo_inverso_aux(figura, args)
@@ -50,7 +50,7 @@ def mapeo_inverso_aux(figura, args):
         # Caso especial: el círculo pasa por el origen → se mapea a línea
         if abs(d2 - r*r) < 1e-12:
             x_line = a / 2
-            return ("linea", ((x_line, 0), (x_line, 1)))
+            return ("recta", ((x_line, 0), (x_line, 1)))
         else:
             # Cálculo general para círculo que no pasa por el origen
             cx = -a / (d2 - r*r)
@@ -58,7 +58,7 @@ def mapeo_inverso_aux(figura, args):
             r_new = r / abs(d2 - r*r)
             return ("circulo", (float(cx), float(cy)), float(r_new))
 
-    elif figura == "linea":
+    elif figura == "recta":
         # Desempaquetar los dos puntos de la línea
         p1, p2 = args
         x1, y1 = p1
@@ -70,7 +70,7 @@ def mapeo_inverso_aux(figura, args):
             x, y = p_no_origen
             # Aplicar inversión respecto al origen
             w = (x/(x**2 + y**2), y/(x**2 + y**2))
-            return ("linea", ((0,0), w))
+            return ("recta", ((0,0), w))
         else:
             # Caso general: la línea no pasa por el origen → se mapea a círculo que pasa por el origen
             q1 = invertir_punto(p1)
@@ -78,7 +78,7 @@ def mapeo_inverso_aux(figura, args):
             q3 = (0,0)
             return ("circulo", *circ_por_tres((0,0), q1, q2))
     else:
-        raise ValueError("El figura debe ser 'circulo' o 'linea'")
+        raise ValueError("El figura debe ser 'circulo' o 'recta'")
     
 
 def invertir_punto(p):
@@ -105,7 +105,7 @@ def circ_por_tres(p1, p2, p3):
 
     denom = A * E - B * D
     if abs(denom) < 1e-12:
-        raise ValueError("Los tres puntos son colineales, no definen un círculo.")
+        raise ValueError("Los tres puntos son corectales, no definen un círculo.")
 
     cx = (C * E - B * F) / denom
     cy = (A * F - C * D) / denom
@@ -133,7 +133,7 @@ def graficar_objeto(figura, *args, color="b", etiqueta=""):
         plt.gca().add_patch(circ)
         plt.plot(cx, cy, "o", color=color)
 
-    elif figura == "linea":
+    elif figura == "recta":
         if len(args) == 1:
             (x1, y1), (x2, y2) = args[0]
         else:
@@ -175,4 +175,4 @@ def mostrar_grafico_comparativo(entrada, salida):
 
 # Pruebas 
 #mapeo_inverso(None, None, "circulo", 1, (1,0))
-#mapeo_inverso((0.5,0), (0.5,0.5), "linea", None, None)
+#mapeo_inverso((0.5,0), (0.5,0.5), "recta", None, None)
