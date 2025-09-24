@@ -2,7 +2,27 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def mapeo_exponencial(x=None, y=None, num_puntos=1000):
+
+def mapeo_exponencial(punto1_recta, punto2_recta, figura, radio_circulo, centro_circulo, A_in, B_in):
+
+    x = None
+    y = None
+
+    #Se verifican los puntos dados para determinar si es una recta vertical o horizontal, de lo contrario no se puede hacer el mapeo
+    if punto1_recta[0] == punto2_recta[0]:  # Recta vertical (x = constante)
+        x = punto1_recta[0]
+        y = None
+    elif punto1_recta[1] == punto2_recta[1]:  # Recta horizontal (y = constante)
+        x = None
+        y = punto1_recta[1]
+    else:
+        raise ValueError("Los puntos dados no forman una recta vertical u horizontal, intente de nuevo.")
+
+    z2, w2 = mapeo_exponencial_aux(x=x, y=y, num_puntos=1000)
+    visualizar_mapeo(z2, w2)
+
+
+def mapeo_exponencial_aux(x=None, y=None, num_puntos=1000):
     
     if x is None and y is None:
         raise ValueError("Al menos uno de x o y debe tener un valor")
@@ -15,10 +35,9 @@ def mapeo_exponencial(x=None, y=None, num_puntos=1000):
         
         # Generar puntos a lo largo de la recta vertical x + iy donde y es constante
         x_vals = np.linspace(0, 5, num_puntos)  # Valores de x desde -5 a 5
-        y_vals = np.full_like(x_vals, theta)     # y constante (ángulo fijo)
         
         # Puntos originales en el plano complejo
-        z_original = x_vals + 1j * y_vals
+        z_original = x_vals + 1j * theta
         
         # Mapeo exponencial: e^(x + iy) = e^x * (cos(y) + i*sin(y))
         w_mapeado = np.exp(z_original)
@@ -74,29 +93,5 @@ def visualizar_mapeo(z_original, w_mapeado, titulo="Mapeo Exponencial"):
     plt.tight_layout()
     plt.show()
 
-# Función principal para probar diferentes casos
-def main():
-    print("=== MAPEO EXPONENCIAL DE NUMEROS COMPLEJOS ===\n")
-    
-    # Ejemplo 1: Recta infinita con ángulo pi/4
-    print("1. Recta infinita con angulo pi/4:")
-    z1, w1 = mapeo_exponencial(x=None, y=np.pi)
-    visualizar_mapeo(z1, w1, "Recta infinita -> Recta desde origen")
-    
-    # Ejemplo 2: Círculo de radio e^1
-    print("\n2. Circulo de radio e^1:")
-    z2, w2 = mapeo_exponencial(x=1, y=None)
-    visualizar_mapeo(z2, w2, "Recta horizontal -> Circulo")
-    
-    # Ejemplo 3: Círculo de radio e^0 = 1
-    print("\n3. Circulo de radio e^0 = 1:")
-    z3, w3 = mapeo_exponencial(x=0, y=None)
-    visualizar_mapeo(z3, w3, "Recta horizontal (x=0) -> Circulo unitario")
-    
-    # Ejemplo 4: Recta con ángulo pi/2
-    print("\n4. Recta infinita con angulo pi/2:")
-    z4, w4 = mapeo_exponencial(x=None, y=np.pi/2)
-    visualizar_mapeo(z4, w4, "Recta infinita (theta=pi/2) -> Recta vertical")
 
-if __name__ == "__main__":
-    main()
+#mapeo_exponencial(punto1_recta=(2,0), punto2_recta=(2,4), figura='linea', radio_circulo=0, centro_circulo=(0,0), A_in=1+0j, B_in=0+0j)

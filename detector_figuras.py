@@ -59,6 +59,7 @@ def detectar_figura_y_texto(nombre_imagen):
             print(f'Punto inicial: ({x1},{y1})')
             print(f'Punto final: ({x2},{y2})')
 
+            # se retorna --> punto1, punto2, figura, radio, centro
             return (x1, y1), (x2, y2), figura, 0, (0,0)
         else:
             print('No se encontraron dos puntos en el texto.')
@@ -80,6 +81,7 @@ def detectar_figura_y_texto(nombre_imagen):
             x, y = centros[0]
             print(f'Centro: ({x},{y})')
 
+            # se retorna --> punto1, punto2, figura, radio, centro
             return (0, 0), (0, 0), figura, radios[0], (x, y)
         else:
             print('No se encontró radio o centro en el texto.')
