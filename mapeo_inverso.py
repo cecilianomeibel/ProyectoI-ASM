@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# --------------------------
-# FUNCION PRINCIPAL PRIMERA
-# --------------------------
+# -------------------
+# FUNCION PRINCIPAL 
+# -------------------
 
 def mapeo_inverso(punto1, punto2, figura, radio, centro):
     """
