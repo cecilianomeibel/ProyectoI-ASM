@@ -55,3 +55,4 @@ def mapeo_lineal_aux(A, B, tipo_figura='circulo', centro=0, radio=1, punto1=-1+0
 
 #mapeo_lineal(punto1_recta=(-1,0), punto2_recta=(1,0), figura='circulo', radio_circulo=2, centro_circulo=(0,0), A_in=2+0j, B_in=1+1j)
 #mapeo_lineal(punto1_recta=(-2,-2), punto2_recta=(2,2), figura='linea', radio_circulo=0, centro_circulo=(0,0), A_in=2+0j, B_in=2+0j)
+#mapeo_lineal(punto1_recta=(-1,0), punto2_recta=(1,0), figura='circulo', radio_circulo=2, centro_circulo=(1,0), A_in=2+0j, B_in=0+0j)

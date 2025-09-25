@@ -6,6 +6,7 @@ def mapeo_bilineal(figura, punto1=None, punto2=None, centro=None, radio=None, a=
     Aplica el mapeo bilineal paso a paso: lineal, inverso, y final extendido.
     Grafica cada paso y retorna los puntos de cada etapa.
     """
+    
     # Paso 1: Mapeo lineal
     if figura == 'recta':
         t = np.linspace(0, 1, n_puntos)
@@ -32,11 +33,10 @@ def mapeo_bilineal(figura, punto1=None, punto2=None, centro=None, radio=None, a=
     w2_points[mask] = 1 / w1_points[mask]
     w2_points[~mask] = np.nan  # Para evitar división por cero
 
-    
     # Paso 3: Mapeo final (identidad, ya que la forma extendida termina aquí)
     # Si quisieras aplicar otra transformación, aquí iría
     w_final = (a/c) + ((b*c - a*d)/c) * w2_points
- 
+
     # Graficar cada paso
     fig, axs = plt.subplots(1, 3, figsize=(15, 4))
     axs[0].plot(z_points.real, z_points.imag)
@@ -69,5 +69,3 @@ if __name__ == "__main__":
 
     # Círculo ejemplo
     #mapeo_bilineal('circulo', centro=0+0j, radio=2, a=0+0j, b=1+0j, c=1+0j, d=0+0j)
-
-
