@@ -49,12 +49,15 @@ def mapeo_inverso_aux(figura, args):
 
         # Caso especial: el círculo pasa por el origen → se mapea a línea
         if abs(d2 - r*r) < 1e-12:
-            x_line = a / 2
-            return ("recta", ((x_line, 0), (x_line, 1)))
+            # La imagen es una recta: todos los puntos w tales que |w - (a+ib)| = |w|
+            x_recta = 2*a  # Ecuación de la recta: x = a/2
+                # Caso especial: centro en eje X → recta vertical
+            return ("recta", ((x_recta, -10), (x_recta, 10)))
+
         else:
             # Cálculo general para círculo que no pasa por el origen
-            cx = -a / (d2 - r*r)
-            cy = -b / (d2 - r*r)
+            cx = a / (d2 - r*r)
+            cy = b / (d2 - r*r)
             r_new = r / abs(d2 - r*r)
             return ("circulo", (float(cx), float(cy)), float(r_new))
 
@@ -70,16 +73,16 @@ def mapeo_inverso_aux(figura, args):
             x, y = p_no_origen
             # Aplicar inversión respecto al origen
             w = (x/(x**2 + y**2), y/(x**2 + y**2))
-            return ("recta", ((0,0), w))
+            return ("recta", ((0, 0), w))
         else:
             # Caso general: la línea no pasa por el origen → se mapea a círculo que pasa por el origen
             q1 = invertir_punto(p1)
             q2 = invertir_punto(p2)
-            q3 = (0,0)
-            return ("circulo", *circ_por_tres((0,0), q1, q2))
+            q3 = (0, 0)
+            return ("circulo", *circ_por_tres((0, 0), q1, q2))
     else:
         raise ValueError("El figura debe ser 'circulo' o 'recta'")
-    
+
 
 def invertir_punto(p):
     """
@@ -88,6 +91,7 @@ def invertir_punto(p):
     x, y = p
     den = x**2 + y**2
     return (x/den, y/den)
+
 
 def circ_por_tres(p1, p2, p3):
     """
@@ -105,13 +109,14 @@ def circ_por_tres(p1, p2, p3):
 
     denom = A * E - B * D
     if abs(denom) < 1e-12:
-        raise ValueError("Los tres puntos son corectales, no definen un círculo.")
+        raise ValueError("Los tres puntos son colineales, no definen un círculo.")
 
     cx = (C * E - B * F) / denom
     cy = (A * F - C * D) / denom
     r = np.hypot(x1 - cx, y1 - cy)  # Radio como distancia desde centro a un punto
 
     return (float(cx), float(cy)), float(r)
+
 
 # ------------
 # GRAFICACIÓN
@@ -128,7 +133,6 @@ def graficar_objeto(figura, *args, color="b", etiqueta=""):
         else:
             centro, radio = args
         cx, cy = centro
-        # Dibuja el círculo y el centro
         circ = plt.Circle((cx, cy), radio, color=color, fill=False, label=etiqueta)
         plt.gca().add_patch(circ)
         plt.plot(cx, cy, "o", color=color)
@@ -144,15 +148,16 @@ def graficar_objeto(figura, *args, color="b", etiqueta=""):
         else:
             m = (y2 - y1) / (x2 - x1)
             b = y1 - m*x1
-            xs = np.linspace(-5,5,400)
+            xs = np.linspace(-5, 5, 400)
             ys = m*xs + b
             plt.plot(xs, ys, color=color, label=etiqueta)
 
+
 def mostrar_grafico_comparativo(entrada, salida):
-    
-    # Muestra una comparación grafica de la figura original y su mapeo inverso.
-    
-    fig, axs = plt.subplots(1, 2, figsize=(6,4))
+    """
+    Muestra una comparación gráfica de la figura original y su mapeo inverso.
+    """
+    fig, axs = plt.subplots(1, 2, figsize=(6, 4))
 
     # Entrada
     axs[0].axhline(0, color="gray", lw=0.5)
@@ -170,9 +175,16 @@ def mostrar_grafico_comparativo(entrada, salida):
     axs[1].set_aspect('equal', adjustable='box')
     axs[1].set_title("Mapeo inverso")
 
+    # Ajustar límites para que se vea la recta
+    axs[1].set_xlim(-1, 6)
+    axs[1].set_ylim(-1, 6)
+
     plt.show()
 
 
 # Pruebas 
-#mapeo_inverso(None, None, "circulo", 1, (1,0))
-#mapeo_inverso((0.5,0), (0.5,0.5), "recta", None, None)
+#mapeo_inverso(None, None, "circulo", 0.5, (0.5, 0))
+#mapeo_inverso(None, None, "circulo", 1, (1, 0)) #circulo que pasa por el origen
+mapeo_inverso((-1,0), (-1,5), "recta", None, None) #recta que no pasa por el origen
+mapeo_inverso((0,0), (0.10,0.10), "recta", None, None) #recta que pasa por el origen
+#mapeo_inverso(None, None, "circulo", 0.5, (1, 2)) #circulo que no pasa por el origen
