@@ -56,8 +56,8 @@ def mapeo_inverso_aux(figura, args):
 
         else:
             # Cálculo general para círculo que no pasa por el origen
-            cx = -a / (d2 - r*r)
-            cy = -b / (d2 - r*r)
+            cx = a / (d2 - r*r)
+            cy = b / (d2 - r*r)
             r_new = r / abs(d2 - r*r)
             return ("circulo", (float(cx), float(cy)), float(r_new))
 
@@ -184,6 +184,7 @@ def mostrar_grafico_comparativo(entrada, salida):
 
 # Pruebas 
 #mapeo_inverso(None, None, "circulo", 0.5, (0.5, 0))
-#mapeo_inverso(None, None, "circulo", 1, (1, 0))
-#mapeo_inverso(None, None, "circulo", 2, (2, 0))
-#mapeo_inverso((-1,0), (-1,5), "recta", None, None)
+#mapeo_inverso(None, None, "circulo", 1, (1, 0)) #circulo que pasa por el origen
+mapeo_inverso((-1,0), (-1,5), "recta", None, None) #recta que no pasa por el origen
+mapeo_inverso((0,0), (0.10,0.10), "recta", None, None) #recta que pasa por el origen
+#mapeo_inverso(None, None, "circulo", 0.5, (1, 2)) #circulo que no pasa por el origen
