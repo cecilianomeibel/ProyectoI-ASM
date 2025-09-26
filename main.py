@@ -46,8 +46,7 @@ def main():
 
                 elif figura == 'circulo':
                     r = float(radio)
-                    x, y = centro
-                    c_centro = complex(float(x), float(y))
+                    c_centro = convertir_a_complejo(centro)
                     tipo_base, puntos_base, centro_result, radio_result = mapeo_bilineal('circulo', centro=c_centro, radio=r, a=a, b=b, c=c, d=d)
 
                 else:
@@ -69,16 +68,18 @@ def main():
                 
                 p1 = convertir_a_complejo(punto1)
                 p2 = convertir_a_complejo(punto2)
+                c_centro = convertir_a_complejo(centro)
+                radio = float(radio)
 
                 if figura == 'recta':
                     puntos_base = mapeo_lineal(punto1=p1, punto2=p2, figura=figura, radio=None, centro=None, A=A, B=B)
 
                 elif figura == 'circulo':
-                    puntos_base = mapeo_lineal(None, None, figura, radio, centro, A, B)
+                    puntos_base = mapeo_lineal(None, None, figura, radio, c_centro, A, B)
                    
             else:
                 print("Aplicando mapeo lineal sobre el resultado anterior...")
-                puntos_base = mapeo_lineal_aux(A, B, puntos_base)
+                puntos_base = mapeo_lineal_aux(A, B, puntos_base, centro_result, tipo_base)
             
         elif opcion == '3':
             print("Ejemplo: Mapeo Cuadrático de un punto (2,1)")
@@ -89,12 +90,14 @@ def main():
                 
                 p1 = convertir_a_complejo(punto1)
                 p2 = convertir_a_complejo(punto2)
+                c_centro = convertir_a_complejo(centro)
+                radio = float(radio)
 
                 if figura == 'recta':
                     puntos_base = mapeo_cuadratico(p1, p2, figura, None, None)
 
                 elif figura == 'circulo':
-                    puntos_base = mapeo_cuadratico(None, None, figura, radio, centro)
+                    puntos_base = mapeo_cuadratico(None, None, figura, radio, c_centro)
                     
             else:
                 print("Aplicando mapeo lineal sobre el resultado anterior...")
@@ -132,12 +135,14 @@ def main():
 
                 p1 = convertir_a_complejo(punto1)
                 p2 = convertir_a_complejo(punto2)
+                c_centro = convertir_a_complejo(centro)
+                radio = float(radio)
 
                 if figura == 'recta':
                     tipo_base, puntos_base, centro_result, radio_result = mapeo_inverso(figura, p1, p2, None, None)
 
                 elif figura == 'circulo':
-                    tipo_base, puntos_base, centro_result, radio_result = mapeo_inverso(figura, None, None, radio, centro)
+                    tipo_base, puntos_base, centro_result, radio_result = mapeo_inverso(figura, None, None, radio, c_centro)
                     
             else:
                 print("Aplicando mapeo lineal sobre el resultado anterior...")

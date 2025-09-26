@@ -4,16 +4,12 @@ import matplotlib.pyplot as plt
 
 #Función principal de de mapeo lineal
 def mapeo_lineal(punto1_recta, punto2_recta, figura, radio_circulo, centro_circulo, A_in, B_in):
-    # Convertir puntos a números complejos
-    punto1_aux = punto1_recta[0]+punto1_recta[1]*1j
-    punto2_aux = punto2_recta[0]+punto2_recta[1]*1j
-    centro_circulo_aux = centro_circulo[0]+centro_circulo[1]*1j
 
     # Se generan los puntos de la figura original
-    puntos_figura_original = generar_puntos_figura_original(tipo_figura=figura, centro=centro_circulo_aux, radio=radio_circulo, punto1=punto1_aux, punto2=punto2_aux, n_puntos=100)
+    puntos_figura_original = generar_puntos_figura_original(tipo_figura=figura, centro=centro_circulo, radio=radio_circulo, punto1=punto1_recta, punto2=punto2_recta, n_puntos=100)
 
     # Aplicar transformación
-    w_points = mapeo_lineal_aux(A_in, B_in, puntos_figura_original)
+    w_points = mapeo_lineal_aux(A_in, B_in, puntos_figura_original, centro_circulo, figura)
 
     return w_points
 
@@ -35,12 +31,17 @@ def generar_puntos_figura_original(tipo_figura='circulo', centro=0, radio=1, pun
     return z_points
 
     
-def mapeo_lineal_aux(A, B, z_points):  
-    # Aplicar transformación
+def mapeo_lineal_aux(A, B, z_points, centro, figura):  
+    # Se mantiene el centro fijo para un circulo
+    if figura == 'circulo':
+        B = (centro - A*centro) + B
+    else:
+        B = B
+    
+    # Aplica transformación
     w_points = A * z_points + B
     
     titulo_z = 'Figura Original'
-    titulo_w = 'Mapeo Lineal'
 
     fig, ax = plt.subplots(1, 2, figsize=(12, 5))
     
