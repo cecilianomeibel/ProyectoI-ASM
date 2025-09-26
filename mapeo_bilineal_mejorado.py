@@ -56,6 +56,7 @@ def mapeo_bilineal(figura, punto1=None, punto2=None, centro=None, radio=None, a=
 
     # Paso 3: Mapeo final (identidad, ya que la forma extendida termina aquí)
     # Si quisieras aplicar otra transformación, aquí iría
+    
     w2_points = np.array(w2_points)  # Convertir lista a array de NumPy
     w_final = np.array(w_final)
     w_final = (a/c) + ((b*c - a*d)/c) * w2_points
@@ -256,7 +257,7 @@ def mapeo_inverso_circulo(puntos_circulo, centro_circulo, radio_circulo):
 if __name__ == "__main__":
 
     #Ejemplo de mapeo bilineal
-    #mapeo_bilineal('recta', punto1=-2+1j, punto2=2+1j, a=2+0j, b=0+1j, c=2+0j, d=0-1j)
+    mapeo_bilineal('recta', punto1=-2+1j, punto2=2+1j, a=2+0j, b=0+1j, c=2+0j, d=0-1j)
 
     # Ejemplo recta vertical
     #mapeo_bilineal('recta', punto1=2-2j, punto2=2+4j, a=2+0j, b=0+1j, c=2+0j, d=0-1j)
@@ -285,4 +286,4 @@ if __name__ == "__main__":
     # Ejemplos de Meibel
     #mapeo_bilineal('recta', punto1=-1+0j, punto2=-1+5j, a=2+0j, b=0+1j, c=1+0j, d=0-0j)
 
-    mapeo_bilineal('recta', punto1=0+0j, punto2=0.10+0.10j, a=2+0j, b=0+1j, c=1+0j, d=0-0j)
+    #mapeo_bilineal('recta', punto1=0+0j, punto2=0.10+0.10j, a=2+0j, b=0+1j, c=1+0j, d=0-0j)

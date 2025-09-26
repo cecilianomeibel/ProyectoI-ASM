@@ -17,24 +17,6 @@ def mapeo_cuadratico(punto1=None, punto2=None, figura=None, radio=None, centro=N
     - radio, centro: argumentos para un círculo
     """
 
-    # Función interna para el mapeo cuadrático
-    def mapeo_cuadratico_aux(z):
-        x, y = z
-        u = x**2 - y**2
-        v = 2*x*y
-        return (u, v)
-
-    # Función interna para graficar
-    def graficar_figura(ax, fig, color="b", etiqueta="", lim=5):
-        x, y = zip(*fig)
-        ax.plot(x, y, color=color, label=etiqueta)
-        ax.axhline(0, color='gray', lw=0.5)
-        ax.axvline(0, color='gray', lw=0.5)
-        ax.set_aspect('equal', adjustable='box')
-        ax.set_xlim(-lim, lim)
-        ax.set_ylim(-lim, lim)
-        ax.legend()
-
     # ------------------
     # CREACION DE LA FIGURA ORIGINAL
     # ------------------
@@ -61,11 +43,15 @@ def mapeo_cuadratico(punto1=None, punto2=None, figura=None, radio=None, centro=N
 
     else:
         raise ValueError("Tipo de figura no reconocida, debe ser 'recta' o 'circulo'")
+    
+    mapeo_cuadratico_aux(figura_original)
 
+# Función auxiliar para el mapeo cuadrático (figura_original es lista de tuplas o pares ordenados)
+def mapeo_cuadratico_aux(figura_original):
     # ------------------
     # MAPEADO CUADRATICO
     # ------------------
-    figura_mapeada = [mapeo_cuadratico_aux(p) for p in figura_original]
+    figura_mapeada = [obtener_componentes_w(p) for p in figura_original]
 
     # ------------------
     # GRAFICO COMPARATIVO
@@ -80,11 +66,36 @@ def mapeo_cuadratico(punto1=None, punto2=None, figura=None, radio=None, centro=N
     plt.tight_layout()
     plt.show()
 
+    #transformar figura_mapeada en formato complejo
+    figura_mapeada_compleja = [complex(x, y) for x, y in figura_mapeada]
+
     # No devuelve nada, solo grafica
-    return
+    return figura_mapeada_compleja
+
+
+# Función interna para el mapeo cuadrático
+def obtener_componentes_w(z):
+    x, y = z
+    u = x**2 - y**2
+    v = 2*x*y
+    return (u, v)
+
+# Función interna para graficar
+def graficar_figura(ax, fig, color="b", etiqueta="", lim=5):
+    x, y = zip(*fig)
+    ax.plot(x, y, color=color, label=etiqueta)
+    ax.axhline(0, color='gray', lw=0.5)
+    ax.axvline(0, color='gray', lw=0.5)
+    ax.set_aspect('equal', adjustable='box')
+    ax.set_xlim(-lim, lim)
+    ax.set_ylim(-lim, lim)
+    ax.legend()
+
+
 
 # ------------------
 # EJEMPLOS
 # ------------------
+
 #mapeo_cuadratico((-1,0), (1,7.5), "recta", None, None)
 #mapeo_cuadratico(None, None, "circulo", 1, (1,0))
