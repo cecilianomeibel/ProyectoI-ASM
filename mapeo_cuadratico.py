@@ -44,7 +44,7 @@ def mapeo_cuadratico(punto1=None, punto2=None, figura=None, radio=None, centro=N
     else:
         raise ValueError("Tipo de figura no reconocida, debe ser 'recta' o 'circulo'")
     
-    mapeo_cuadratico_aux(figura_original)
+    return mapeo_cuadratico_aux(figura_original)
 
 # Función auxiliar para el mapeo cuadrático (figura_original es lista de tuplas o pares ordenados)
 def mapeo_cuadratico_aux(figura_original):

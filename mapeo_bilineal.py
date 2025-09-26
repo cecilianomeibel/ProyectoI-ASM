@@ -62,6 +62,7 @@ def mapeo_bilineal(figura, punto1=None, punto2=None, centro=None, radio=None, a=
 
     return z_points, w1_points, w_final
 
+"""
 # Ejemplo de uso:
 if __name__ == "__main__":
     # Recta ejemplo
@@ -69,3 +70,4 @@ if __name__ == "__main__":
 
     # Círculo ejemplo
     #mapeo_bilineal('circulo', centro=0+0j, radio=2, a=0+0j, b=1+0j, c=1+0j, d=0+0j)
+"""

@@ -185,6 +185,6 @@ def mostrar_grafico_comparativo(entrada, salida):
 # Pruebas 
 #mapeo_inverso(None, None, "circulo", 0.5, (0.5, 0))
 #mapeo_inverso(None, None, "circulo", 1, (1, 0)) #circulo que pasa por el origen
-mapeo_inverso((-1,0), (-1,5), "recta", None, None) #recta que no pasa por el origen
-mapeo_inverso((0,0), (0.10,0.10), "recta", None, None) #recta que pasa por el origen
+#mapeo_inverso((-1,0), (-1,5), "recta", None, None) #recta que no pasa por el origen
+#mapeo_inverso((0,0), (0.10,0.10), "recta", None, None) #recta que pasa por el origen
 #mapeo_inverso(None, None, "circulo", 0.5, (1, 2)) #circulo que no pasa por el origen

@@ -16,7 +16,7 @@ def generar_puntos_figura_original(figura, punto1=None, punto2=None, centro=None
 
     # Se generan los puntos de la figura original
     if figura == 'recta':
-        t = np.linspace(0, 1, n_puntos)
+        t = np.linspace(-5, 5, n_puntos)
         z_points = punto1 + t * (punto2 - punto1)
 
     else:  #cuando la figura es un circulo
@@ -47,7 +47,7 @@ def mapeo_inverso_aux(figura, z_points, centro=None, radio=None):
 
     # Graficar cada paso
     fig, axs = plt.subplots(1, 2, figsize=(15, 4))
-    axs[0].plot(z_points.real, z_points.imag)
+    axs[0].plot(z_points.real, z_points.imag, color='red',linewidth=5)
     axs[0].axhline(y=0, color='black', linewidth=1)  # Eje X
     axs[0].axvline(x=0, color='black', linewidth=1)  # Eje Y
     axs[0].set_title('Figura original\n')
@@ -82,9 +82,13 @@ def mapeo_inverso_recta(puntos_recta):
     # Se verifica si la pendiente de la recta es infinita (una recta vertical)
     if puntos_recta[-1].real == puntos_recta[0].real:
 
-        #Se obtiene los parámetros del circulo
-        centro_circulo = (1/(puntos_recta[0].real*2)) + 0j
-        radio_circulo = (1/(puntos_recta[0].real*2))
+        if puntos_recta[0].real == 0:
+            centro_circulo = 0
+            radio_circulo = 1
+        else:
+            #Se obtiene los parámetros del circulo
+            centro_circulo = (1/(puntos_recta[0].real*2)) + 0j
+            radio_circulo = (1/(puntos_recta[0].real*2))
 
         # Se obtiene los puntos del circulo
         theta = np.linspace(0, 2 * np.pi, 400)

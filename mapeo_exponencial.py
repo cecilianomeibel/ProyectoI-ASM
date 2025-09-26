@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def mapeo_exponencial(punto1_recta, punto2_recta, figura, radio_circulo, centro_circulo, A_in, B_in):
+def mapeo_exponencial(punto1_recta, punto2_recta):
 
     x = None
     y = None
@@ -103,4 +103,4 @@ def visualizar_mapeo(z_original, w_mapeado, titulo="Mapeo Exponencial"):
     plt.show()
 
 
-mapeo_exponencial(punto1_recta=(2,0), punto2_recta=(2,4), figura='linea', radio_circulo=0, centro_circulo=(0,0), A_in=1+0j, B_in=0+0j)
+#mapeo_exponencial(punto1_recta=(2,0), punto2_recta=(2,4), figura='linea', radio_circulo=0, centro_circulo=(0,0), A_in=1+0j, B_in=0+0j)
