@@ -1,11 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def mapeo_bilineal(figura, punto1=None, punto2=None, centro=None, radio=None, a=1+0j, b=0+0j, c=0+0j, d=0+0j, n_puntos=400):
-    """
-    Aplica el mapeo bilineal paso a paso: lineal, inverso, y final extendido.
-    Grafica cada paso y retorna los puntos de cada etapa.
-    """
+def mapeo_inverso(figura, punto1=None, punto2=None, centro=None, radio=None, a=1+0j, b=0+0j, c=0+0j, d=0+0j, n_puntos=400):
+
+    z_points = None
+    w1_points = None
 
     # Se generan los puntos de la figura original
     if figura == 'recta':
@@ -13,55 +12,27 @@ def mapeo_bilineal(figura, punto1=None, punto2=None, centro=None, radio=None, a=
         z_points = punto1 + t * (punto2 - punto1)
         titulo_z = f'Recta: {punto1} a {punto2}'
 
-    elif figura == 'circulo':
+    else:  #cuando la figura es un circulo
         theta = np.linspace(-2 * np.pi, 2 * np.pi, n_puntos)
         z_points = centro + radio * np.exp(1j * theta)
         titulo_z = f'Círculo: centro={centro}, radio={radio}'
 
-    else:
-        raise ValueError("figura debe ser 'recta' o 'circulo'")
 
-    # Paso 1: Mapeo lineal
-
-    # Mapeo lineal: w1 = A*z + B
-    # Para la forma extendida: A = (bc - ad)/c, B = a/c
-    if c == 0:
-        raise ValueError("El coeficiente c no puede ser cero en la forma extendida")
-    
-    B = 0
-    A = c
+    # Se realiza el mapeo inverso
     if figura == 'recta':
-        B = d
-    else:
-        # escalamiento con centro fijo (cuando se hace un escalamiento no centrado en el origen, el centro del circulo se mueve, por ende se contrarresta)
-        B = (centro - A*centro) + d
-
-    # Mapeo lineal
-    w1_points = A * z_points + B
-
-    # Paso 2: Mapeo inverso (inversión respecto al origen): w2 = 1/w1
-    w2_points = []
-    w_final = []
-
-    # Se debe hacer analisis de la figura luego de la tranformacion lineal
-    if figura == 'recta':
-        w2_points = mapeo_inverso_recta(w1_points)
+        w1_points = mapeo_inverso_recta(z_points)
 
     else:
         #cuando la figura es un circulo
-        centro_circulo = centro + d
-        radio_circulo = radio * np.abs(A)
-        w2_points = mapeo_inverso_circulo(w1_points, centro_circulo, radio_circulo)
-
-
-    # Paso 3: Mapeo final (identidad, ya que la forma extendida termina aquí)
-    # Si quisieras aplicar otra transformación, aquí iría
-    w2_points = np.array(w2_points)  # Convertir lista a array de NumPy
-    w_final = np.array(w_final)
-    w_final = (a/c) + ((b*c - a*d)/c) * w2_points
+        centro_circulo = centro
+        radio_circulo = radio
+        w1_points = mapeo_inverso_circulo(w1_points, centro_circulo, radio_circulo)
+    
+    # Convertir a array de NumPy para asegurar que tenga atributos .real e .imag
+    w1_points = np.array(w1_points)
 
     # Graficar cada paso
-    fig, axs = plt.subplots(1, 3, figsize=(15, 4))
+    fig, axs = plt.subplots(1, 2, figsize=(15, 4))
     axs[0].plot(z_points.real, z_points.imag)
     axs[0].axhline(y=0, color='black', linewidth=1)  # Eje X
     axs[0].axvline(x=0, color='black', linewidth=1)  # Eje Y
@@ -74,24 +45,18 @@ def mapeo_bilineal(figura, punto1=None, punto2=None, centro=None, radio=None, a=
     axs[1].plot(w1_points.real, w1_points.imag)
     axs[1].axhline(y=0, color='black', linewidth=1)  # Eje X
     axs[1].axvline(x=0, color='black', linewidth=1)  # Eje Y
-    axs[1].set_title('Tras mapeo lineal')
+    axs[1].set_title('Mapeo de inversión')
     axs[1].set_aspect('equal')
     if figura == 'recta':
         axs[1].set_xlim(-5, 5)
         axs[1].set_ylim(-5, 5)
     axs[1].grid()
-    axs[2].plot(w_final.real, w_final.imag)
-    axs[2].axhline(y=0, color='black', linewidth=1)  # Eje X
-    axs[2].axvline(x=0, color='black', linewidth=1)  # Eje Y
-    axs[2].set_title('Tras inversión y forma extendida')
-    axs[2].set_aspect('equal')
-    axs[2].set_xlim(-5, 5)
-    axs[2].set_ylim(-5, 5)
-    axs[2].grid()
+    
     plt.tight_layout()
     plt.show()
 
-    return z_points, w1_points, w_final
+    return z_points, w1_points
+
 
 # Función para el mapeo inverso de una recta (contempla todos los posibles casos)
 def mapeo_inverso_recta(puntos_recta):
@@ -255,34 +220,31 @@ def mapeo_inverso_circulo(puntos_circulo, centro_circulo, radio_circulo):
 # Ejemplo de uso:
 if __name__ == "__main__":
 
-    #Ejemplo de mapeo bilineal
-    #mapeo_bilineal('recta', punto1=-2+1j, punto2=2+1j, a=2+0j, b=0+1j, c=2+0j, d=0-1j)
-
     # Ejemplo recta vertical
-    #mapeo_bilineal('recta', punto1=2-2j, punto2=2+4j, a=2+0j, b=0+1j, c=2+0j, d=0-1j)
+    mapeo_inverso('recta', punto1=2-2j, punto2=2+4j, a=2+0j, b=0+1j, c=2+0j, d=0-1j)
 
     # Recta horizontal ejemplo
-    #mapeo_bilineal('recta', punto1=-2+1j, punto2=2+1j, a=2+0j, b=0+1j, c=2+0j, d=0-0j)
+    #mapeo_inverso('recta', punto1=-2+1j, punto2=2+1j, a=2+0j, b=0+1j, c=2+0j, d=0-0j)
 
     # Recta que pasa por el origen
-    #mapeo_bilineal('recta', punto1=-10-10j, punto2=10+10j, a=2+0j, b=0+1j, c=2+0j, d=0-0j)
+    #mapeo_inverso('recta', punto1=-10-10j, punto2=10+10j, a=2+0j, b=0+1j, c=2+0j, d=0-0j)
 
     #Recta que interseca en los dos ejes
-    #mapeo_bilineal('recta', punto1=-4-2j, punto2=2+4j, a=2+0j, b=0+1j, c=2+0j, d=0-0j)
+    #mapeo_inverso('recta', punto1=-4-2j, punto2=2+4j, a=2+0j, b=0+1j, c=2+0j, d=0-0j)
 
     # Círculo centrado sobre el eje real
-    #mapeo_bilineal('circulo', centro=2+0j, radio=1, a=0+0j, b=1+0j, c=2+0j, d=0+0j)
+    #mapeo_inverso('circulo', centro=2+0j, radio=1, a=0+0j, b=1+0j, c=2+0j, d=0+0j)
 
     #Círculo centrado sobre el eje imaginario
-    #mapeo_bilineal('circulo', centro=0+2j, radio=1, a=0+0j, b=1+0j, c=2+0j, d=0+0j)
+    #mapeo_inverso('circulo', centro=0+2j, radio=1, a=0+0j, b=1+0j, c=2+0j, d=0+0j)
 
     #Círculo que pasa por el origen y tiene intersección en ambos ejes
-    #mapeo_bilineal('circulo', centro=1+1j, radio=2**(1/2), a=0+0j, b=1+0j, c=1+0j, d=0+0j)
+    #mapeo_inverso('circulo', centro=1+1j, radio=2**(1/2), a=0+0j, b=1+0j, c=1+0j, d=0+0j)
 
     # Círculo que no pasa por el origen
-    #mapeo_bilineal('circulo', centro=4+4j, radio=2, a=0+0j, b=1+0j, c=1+0j, d=0+0j)
+    #mapeo_inverso('circulo', centro=4+4j, radio=2, a=0+0j, b=1+0j, c=1+0j, d=0+0j)
 
     # Ejemplos de Meibel
-    #mapeo_bilineal('recta', punto1=-1+0j, punto2=-1+5j, a=2+0j, b=0+1j, c=1+0j, d=0-0j)
+    #mapeo_inverso('recta', punto1=-1+0j, punto2=-1+5j, a=2+0j, b=0+1j, c=1+0j, d=0-0j)
 
-    mapeo_bilineal('recta', punto1=0+0j, punto2=0.10+0.10j, a=2+0j, b=0+1j, c=1+0j, d=0-0j)
+    #mapeo_inverso('recta', punto1=0+0j, punto2=0.10+0.10j, a=2+0j, b=0+1j, c=1+0j, d=0-0j)

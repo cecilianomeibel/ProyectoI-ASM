@@ -30,8 +30,8 @@ def mapeo_exponencial_aux(x=None, y=None, num_puntos=1000):
     # Caso 1: x = None, y = constante (ángulo fijo)
     # Genera una recta vertical en el plano z que se mapea a una recta desde el origen
     if x is None:
+        # Se genera una recta
         theta = y  # Ángulo en radianes
-        print(f"Generando recta infinita con angulo theta = {theta:.4f} radianes ({np.degrees(theta):.2f} grados)")
         
         # Generar puntos a lo largo de la recta vertical x + iy donde y es constante
         x_vals = np.linspace(0, 5, num_puntos)  # Valores de x desde -5 a 5
@@ -45,7 +45,7 @@ def mapeo_exponencial_aux(x=None, y=None, num_puntos=1000):
     # Caso 2: y = None, x = constante (radio fijo)  
     # Genera una recta horizontal en el plano z que se mapea a un círculo
     elif y is None:
-        print(f"Generando circulo de radio e^{x:.4f} = {np.exp(x):.4f}")
+        # Se genera un círculo
         
         # Generar puntos a lo largo de la recta horizontal x + iy donde x es constante
         y_vals = np.linspace(0, 2*np.pi, num_puntos)  # Ángulos de 0 a 2π
@@ -59,11 +59,11 @@ def mapeo_exponencial_aux(x=None, y=None, num_puntos=1000):
         
     # Caso 3: Ambos x e y tienen valores (punto único)
     else:
-        print(f"Mapeando punto único z = {x} + {y}i")
         z_original = np.array([x + 1j * y])
         w_mapeado = np.exp(z_original)
     
     return z_original, w_mapeado
+
 
 def visualizar_mapeo(z_original, w_mapeado, titulo="Mapeo Exponencial"):
     """
