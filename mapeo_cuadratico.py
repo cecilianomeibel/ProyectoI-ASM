@@ -69,7 +69,7 @@ def mapeo_cuadratico_aux(figura_original):
     #transformar figura_mapeada en formato complejo
     figura_mapeada_compleja = [complex(x, y) for x, y in figura_mapeada]
 
-    # No devuelve nada, solo grafica
+    # retornar la figura mapeada en formato complejo (puntos complejos)
     return figura_mapeada_compleja
 
 

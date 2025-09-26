@@ -9,26 +9,40 @@ def mapeo_lineal(punto1_recta, punto2_recta, figura, radio_circulo, centro_circu
     punto2_aux = punto2_recta[0]+punto2_recta[1]*1j
     centro_circulo_aux = centro_circulo[0]+centro_circulo[1]*1j
 
-    # Se llama a la función auxiliar para realizar el mapeo y graficar
-    mapeo_lineal_aux(A=A_in, B=B_in, tipo_figura=figura, centro=centro_circulo_aux, radio=radio_circulo, punto1=punto1_aux, punto2=punto2_aux, n_puntos=100)
+    # Se generan los puntos de la figura original
+    puntos_figura_original = generar_puntos_figura_original(tipo_figura=figura, centro=centro_circulo_aux, radio=radio_circulo, punto1=punto1_aux, punto2=punto2_aux, n_puntos=100)
 
-# Función auxiliar para realizar el mapeo lineal y graficar los resultados
-def mapeo_lineal_aux(A, B, tipo_figura='circulo', centro=0, radio=1, punto1=-1+0j, punto2=1+0j, n_puntos=100):
+    # Aplicar transformación
+    w_points = mapeo_lineal_aux(A_in, B_in, puntos_figura_original)
 
-    fig, ax = plt.subplots(1, 2, figsize=(12, 5))
+    return w_points
+
+
+# Función para generar puntos de la figura original y aplicar el mapeo lineal
+def generar_puntos_figura_original(tipo_figura='circulo', centro=0, radio=1, punto1=-1+0j, punto2=1+0j, n_puntos=100):
+
+    z_points = None
     
     # Generar puntos según el tipo de figura
     if tipo_figura == 'circulo':
         theta = np.linspace(0, 2 * np.pi, n_puntos)
         z_points = centro + radio * np.exp(1j * theta)
-        titulo_z = f'Círculo: centro={centro}, radio={radio}'
     else:
         t = np.linspace(0, 1, n_puntos)
         z_points = punto1 + t * (punto2 - punto1)
-        titulo_z = f'Línea: P1={punto1}, P2={punto2}'
+
+    # se retorna los puntos transformados
+    return z_points
+
     
+def mapeo_lineal_aux(A, B, z_points):  
     # Aplicar transformación
     w_points = A * z_points + B
+    
+    titulo_z = 'Figura Original'
+    titulo_w = 'Mapeo Lineal'
+
+    fig, ax = plt.subplots(1, 2, figsize=(12, 5))
     
     # Grafica de los puntos originales
     ax[0].plot(z_points.real, z_points.imag, 'b-', linewidth=2)
@@ -53,6 +67,9 @@ def mapeo_lineal_aux(A, B, tipo_figura='circulo', centro=0, radio=1, punto1=-1+0
     plt.tight_layout()
     plt.show()
 
-#mapeo_lineal(punto1_recta=(-1,0), punto2_recta=(1,0), figura='circulo', radio_circulo=2, centro_circulo=(0,0), A_in=2+0j, B_in=1+1j)
+    # se retorna los puntos transformados
+    return w_points
+
+mapeo_lineal(punto1_recta=(-1,0), punto2_recta=(1,0), figura='circulo', radio_circulo=2, centro_circulo=(0,0), A_in=2+0j, B_in=1+1j)
 #mapeo_lineal(punto1_recta=(-2,-2), punto2_recta=(2,2), figura='linea', radio_circulo=0, centro_circulo=(0,0), A_in=2+0j, B_in=2+0j)
 #mapeo_lineal(punto1_recta=(-1,0), punto2_recta=(1,0), figura='circulo', radio_circulo=2, centro_circulo=(1,0), A_in=2+0j, B_in=0+0j)

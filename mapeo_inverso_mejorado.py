@@ -1,32 +1,46 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def mapeo_inverso(figura, punto1=None, punto2=None, centro=None, radio=None, a=1+0j, b=0+0j, c=0+0j, d=0+0j, n_puntos=400):
+def mapeo_inverso(figura, punto1=None, punto2=None, centro=None, radio=None, n_puntos=400):
+
+    figura_original = generar_puntos_figura_original(figura, punto1, punto2, centro, radio, n_puntos=n_puntos)
+
+    figura_result, w_points, centro_result, radio_result = mapeo_inverso_aux(figura, figura_original, centro=centro, radio=radio)
+
+    return figura_result, w_points, centro_result, radio_result
+
+
+def generar_puntos_figura_original(figura, punto1=None, punto2=None, centro=None, radio=None,n_puntos=400):
 
     z_points = None
-    w1_points = None
 
     # Se generan los puntos de la figura original
     if figura == 'recta':
         t = np.linspace(0, 1, n_puntos)
         z_points = punto1 + t * (punto2 - punto1)
-        titulo_z = f'Recta: {punto1} a {punto2}'
 
     else:  #cuando la figura es un circulo
         theta = np.linspace(-2 * np.pi, 2 * np.pi, n_puntos)
         z_points = centro + radio * np.exp(1j * theta)
-        titulo_z = f'Círculo: centro={centro}, radio={radio}'
 
+    return z_points
+
+def mapeo_inverso_aux(figura, z_points, centro=None, radio=None):
+
+    w1_points = None
+    figura_result = None
+    centro_result = None
+    radio_result = None
 
     # Se realiza el mapeo inverso
     if figura == 'recta':
-        w1_points = mapeo_inverso_recta(z_points)
+        figura_result, w1_points, centro_result, radio_result = mapeo_inverso_recta(z_points)
 
     else:
         #cuando la figura es un circulo
         centro_circulo = centro
         radio_circulo = radio
-        w1_points = mapeo_inverso_circulo(w1_points, centro_circulo, radio_circulo)
+        figura_result, w1_points, centro_result, radio_result = mapeo_inverso_circulo(z_points, centro_circulo, radio_circulo)
     
     # Convertir a array de NumPy para asegurar que tenga atributos .real e .imag
     w1_points = np.array(w1_points)
@@ -36,7 +50,7 @@ def mapeo_inverso(figura, punto1=None, punto2=None, centro=None, radio=None, a=1
     axs[0].plot(z_points.real, z_points.imag)
     axs[0].axhline(y=0, color='black', linewidth=1)  # Eje X
     axs[0].axvline(x=0, color='black', linewidth=1)  # Eje Y
-    axs[0].set_title('Figura original\n' + titulo_z)
+    axs[0].set_title('Figura original\n')
     axs[0].set_aspect('equal')
     if figura == 'recta':
         axs[0].set_xlim(-5, 5)
@@ -55,7 +69,7 @@ def mapeo_inverso(figura, punto1=None, punto2=None, centro=None, radio=None, a=1
     plt.tight_layout()
     plt.show()
 
-    return z_points, w1_points
+    return figura_result, w1_points, centro_result, radio_result
 
 
 # Función para el mapeo inverso de una recta (contempla todos los posibles casos)
@@ -77,7 +91,7 @@ def mapeo_inverso_recta(puntos_recta):
         z_points_inversa = centro_circulo + radio_circulo * np.exp(1j * theta)
 
         # Se retornan los puntos del circulo, el mapeo de la recta vertical
-        return z_points_inversa
+        return 'circulo', z_points_inversa, centro_circulo, radio_circulo
     
     else:
         # Pendiente de la recta
@@ -96,7 +110,7 @@ def mapeo_inverso_recta(puntos_recta):
         z_points_inversa = centro_circulo + radio_circulo * np.exp(1j * theta)
                 
         # Se retornan los puntos del circulo, el mapeo de la recta horizontal
-        return z_points_inversa
+        return 'circulo', z_points_inversa, centro_circulo, radio_circulo
 
     else:
         # Se calcula la intersección con el eje imag (cuando real = 0)
@@ -113,7 +127,7 @@ def mapeo_inverso_recta(puntos_recta):
             puntos_transformación_final.append(nuevo_punto)
         
         # se retornan los puntos de la recta, el mapeo de una recta que pasa por el origen
-        return puntos_transformación_final
+        return 'recta', puntos_transformación_final, 0+0j, 0.0
     
     else:
         #La recta no pasa por el origen (tiene dos intersecciones con los ejes), se convierte en un circulo que pasa por el origen con intersección en los dos ejes
@@ -138,7 +152,7 @@ def mapeo_inverso_recta(puntos_recta):
         z_points_inversa = centro_circulo + radio_circulo * np.exp(1j * theta)
 
         # se retornan los puntos del circulo, el mapeo de una recta que no pasa por el origen
-        return z_points_inversa
+        return 'circulo', z_points_inversa, centro_circulo, radio_circulo
 
 # Función para el mapeo inverso de un círculo (contempla todos los posibles casos)
 def mapeo_inverso_circulo(puntos_circulo, centro_circulo, radio_circulo):
@@ -166,7 +180,7 @@ def mapeo_inverso_circulo(puntos_circulo, centro_circulo, radio_circulo):
             t = np.linspace(0, 1, 400)
             z_points = punto1 + t * (punto2 - punto1)
 
-            return z_points
+            return 'recta', z_points, 0+0j, 0.0
         
     # Se verifica si el circulo se encuentra sobre el eje imaginario
     elif centro_circulo.real == 0:
@@ -185,7 +199,7 @@ def mapeo_inverso_circulo(puntos_circulo, centro_circulo, radio_circulo):
             t = np.linspace(0, 1, 400)
             z_points = punto1 + t * (punto2 - punto1)
 
-            return z_points
+            return 'recta', z_points, 0+0j, 0.0
     
     # Se verifica si el circulo pasa por el origen y tiene intersección en ambos ejes
     if ((centro_circulo.real**2 + centro_circulo.imag**2) - radio_circulo**2) <= 1e-10:
@@ -193,7 +207,6 @@ def mapeo_inverso_circulo(puntos_circulo, centro_circulo, radio_circulo):
         #De la ecuación del círculo (x-h)^2 + (y-k)^2 = r^2
         # h = a/2 (a = interseccion_eje_real), k = b/2 (b = interseccion_eje_img)
         # Por lo tanto: a = h*2, b = k*2  (siempre y cuando el círculo pase por el origen)
-        print("Pasa aquí?")
 
         interseccion_eje_real = centro_circulo.real*2
         interseccion_eje_real = 1/interseccion_eje_real # se invierte la componente real por el mapeo inverso 
@@ -209,40 +222,45 @@ def mapeo_inverso_circulo(puntos_circulo, centro_circulo, radio_circulo):
         t = np.linspace(-5, 5, 400)
         z_points = punto1 + t * (punto2 - punto1)
 
-        return z_points
+        return 'recta', z_points, 0+0j, 0.0
 
     else:
         # El círculo no pasa por el origen, se invierten todos sus puntos
-        z_points = 1 / puntos_circulo
-        return z_points
+        z_points = 1/puntos_circulo
+        centro_circulo_result = centro_circulo.conjugate() / (np.abs(centro_circulo)**2 - radio_circulo**2)
+        radio_circulo_result = radio_circulo / abs(np.abs(centro_circulo)**2 - radio_circulo**2)
+        # Se retornan los puntos del circulo, el mapeo del circulo que no pasa por el origen
+        return 'circulo', z_points, centro_circulo_result, radio_circulo_result
 
 
 # Ejemplo de uso:
-if __name__ == "__main__":
+#if __name__ == "__main__":
 
     # Ejemplo recta vertical
-    mapeo_inverso('recta', punto1=2-2j, punto2=2+4j, a=2+0j, b=0+1j, c=2+0j, d=0-1j)
+    #mapeo_inverso('recta', punto1=2-2j, punto2=2+4j)
 
     # Recta horizontal ejemplo
-    #mapeo_inverso('recta', punto1=-2+1j, punto2=2+1j, a=2+0j, b=0+1j, c=2+0j, d=0-0j)
+    #mapeo_inverso('recta', punto1=-2+1j, punto2=2+1j)
 
     # Recta que pasa por el origen
-    #mapeo_inverso('recta', punto1=-10-10j, punto2=10+10j, a=2+0j, b=0+1j, c=2+0j, d=0-0j)
+    #mapeo_inverso('recta', punto1=-10-10j, punto2=10+10j)
 
     #Recta que interseca en los dos ejes
-    #mapeo_inverso('recta', punto1=-4-2j, punto2=2+4j, a=2+0j, b=0+1j, c=2+0j, d=0-0j)
+    #mapeo_inverso('recta', punto1=-4-2j, punto2=2+4j)
 
     # Círculo centrado sobre el eje real
-    #mapeo_inverso('circulo', centro=2+0j, radio=1, a=0+0j, b=1+0j, c=2+0j, d=0+0j)
+    #mapeo_inverso('circulo', centro=2+0j, radio=1)
 
     #Círculo centrado sobre el eje imaginario
-    #mapeo_inverso('circulo', centro=0+2j, radio=1, a=0+0j, b=1+0j, c=2+0j, d=0+0j)
+    #mapeo_inverso('circulo', centro=0+2j, radio=1)
 
     #Círculo que pasa por el origen y tiene intersección en ambos ejes
-    #mapeo_inverso('circulo', centro=1+1j, radio=2**(1/2), a=0+0j, b=1+0j, c=1+0j, d=0+0j)
+    #mapeo_inverso('circulo', centro=1+1j, radio=2**(1/2))
 
     # Círculo que no pasa por el origen
-    #mapeo_inverso('circulo', centro=4+4j, radio=2, a=0+0j, b=1+0j, c=1+0j, d=0+0j)
+    #figura_result, w_points, centro_result, radio_result = mapeo_inverso('circulo', centro=4+4j, radio=2)
+    #print(f'Figura resultante: {figura_result}')
+    #print(f'Centro resultante: {centro_result}, Radio resultante: {radio_result}')
 
     # Ejemplos de Meibel
     #mapeo_inverso('recta', punto1=-1+0j, punto2=-1+5j, a=2+0j, b=0+1j, c=1+0j, d=0-0j)

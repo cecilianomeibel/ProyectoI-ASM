@@ -18,12 +18,19 @@ def mapeo_exponencial(punto1_recta, punto2_recta, figura, radio_circulo, centro_
     else:
         raise ValueError("Los puntos dados no forman una recta vertical u horizontal, intente de nuevo.")
 
-    z2, w2 = mapeo_exponencial_aux(x=x, y=y, num_puntos=1000)
-    visualizar_mapeo(z2, w2)
+    # Se obtiene los puntos de la figura original
+    figura_original = generar_puntos_figura_original(x=x, y=y, num_puntos=1000)
+
+    # Se realiza el mapeo exponencial
+    w_points = mapeo_exponencial_aux(figura_original)
+
+    return w_points
 
 
-def mapeo_exponencial_aux(x=None, y=None, num_puntos=1000):
+def generar_puntos_figura_original(x=None, y=None, num_puntos=1000):
     
+    z_original = None
+
     if x is None and y is None:
         raise ValueError("Al menos uno de x o y debe tener un valor")
     
@@ -39,9 +46,6 @@ def mapeo_exponencial_aux(x=None, y=None, num_puntos=1000):
         # Puntos originales en el plano complejo
         z_original = x_vals + 1j * theta
         
-        # Mapeo exponencial: e^(x + iy) = e^x * (cos(y) + i*sin(y))
-        w_mapeado = np.exp(z_original)
-        
     # Caso 2: y = None, x = constante (radio fijo)  
     # Genera una recta horizontal en el plano z que se mapea a un círculo
     elif y is None:
@@ -54,15 +58,20 @@ def mapeo_exponencial_aux(x=None, y=None, num_puntos=1000):
         # Puntos originales en el plano complejo
         z_original = x_val + 1j * y_vals
         
-        # Mapeo exponencial: e^(x + iy) = e^x * (cos(y) + i*sin(y))
-        w_mapeado = np.exp(z_original)
-        
     # Caso 3: Ambos x e y tienen valores (punto único)
     else:
         z_original = np.array([x + 1j * y])
-        w_mapeado = np.exp(z_original)
     
-    return z_original, w_mapeado
+
+    return z_original
+
+
+def mapeo_exponencial_aux(z_original=None):
+    # Se realiza el mapeo exponencial: e^(x + iy) = e^x * (cos(y) + i*sin(y))
+    w_mapeado = np.exp(z_original)
+    visualizar_mapeo(z_original, w_mapeado)
+
+    return w_mapeado
 
 
 def visualizar_mapeo(z_original, w_mapeado, titulo="Mapeo Exponencial"):
@@ -94,4 +103,4 @@ def visualizar_mapeo(z_original, w_mapeado, titulo="Mapeo Exponencial"):
     plt.show()
 
 
-#mapeo_exponencial(punto1_recta=(2,0), punto2_recta=(2,4), figura='linea', radio_circulo=0, centro_circulo=(0,0), A_in=1+0j, B_in=0+0j)
+mapeo_exponencial(punto1_recta=(2,0), punto2_recta=(2,4), figura='linea', radio_circulo=0, centro_circulo=(0,0), A_in=1+0j, B_in=0+0j)
