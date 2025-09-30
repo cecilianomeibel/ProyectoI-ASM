@@ -88,16 +88,16 @@ def main():
                 punto1, punto2, figura, radio, centro = detector_figuras.detectar_figura_y_texto(imagen)
                 print(f'Datos extraídos: punto1={punto1}, punto2={punto2}, figura={figura}, radio={radio}, centro={centro}')
                 
-                p1 = convertir_a_complejo(punto1)
-                p2 = convertir_a_complejo(punto2)
-                c_centro = convertir_a_complejo(centro)
+                p1 = (float(punto1[0]), float(punto1[1]))
+                p2 = (float(punto2[0]), float(punto2[1]))
                 radio = float(radio)
+                centro = (float(centro[0]), float(centro[1]))
 
                 if figura == 'recta':
                     puntos_base = mapeo_cuadratico(p1, p2, figura, None, None)
 
                 elif figura == 'circulo':
-                    puntos_base = mapeo_cuadratico(None, None, figura, radio, c_centro)
+                    puntos_base = mapeo_cuadratico(None, None, figura, radio, centro)
                     
             else:
                 print("Aplicando mapeo lineal sobre el resultado anterior...")
@@ -111,12 +111,9 @@ def main():
             if puntos_base is None:
                 punto1, punto2, figura, radio, centro = detector_figuras.detectar_figura_y_texto(imagen)
                 print(f'Datos extraídos: punto1={punto1}, punto2={punto2}, figura={figura}, radio={radio}, centro={centro}')
-
-                p1 = convertir_a_complejo(punto1)
-                p2 = convertir_a_complejo(punto2)
                 
                 if figura == 'recta':
-                    puntos_base = mapeo_exponencial(p1, p2)
+                    puntos_base = mapeo_exponencial(punto1, punto2)
                 else:
                     print("Figura no reconocida o no detectada.")
                     break

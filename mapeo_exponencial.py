@@ -10,11 +10,11 @@ def mapeo_exponencial(punto1_recta, punto2_recta):
 
     #Se verifican los puntos dados para determinar si es una recta vertical o horizontal, de lo contrario no se puede hacer el mapeo
     if punto1_recta[0] == punto2_recta[0]:  # Recta vertical (x = constante)
-        x = punto1_recta[0]
+        x = float(punto1_recta[0])  # Convertir a float
         y = None
     elif punto1_recta[1] == punto2_recta[1]:  # Recta horizontal (y = constante)
         x = None
-        y = punto1_recta[1]
+        y = float(punto1_recta[1])  # Convertir a float
     else:
         raise ValueError("Los puntos dados no forman una recta vertical u horizontal, intente de nuevo.")
 
@@ -103,4 +103,4 @@ def visualizar_mapeo(z_original, w_mapeado, titulo="Mapeo Exponencial"):
     plt.show()
 
 
-#mapeo_exponencial(punto1_recta=(2,0), punto2_recta=(2,4), figura='linea', radio_circulo=0, centro_circulo=(0,0), A_in=1+0j, B_in=0+0j)
+#   mapeo_exponencial(punto1_recta=(2,0), punto2_recta=(2,4))
